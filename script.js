@@ -2,13 +2,13 @@
 playerData = {
   attackSize: 10,
   attackSpeed: 5,
-  characterSpeed: 5
+  speed: .1
 }
 
 enemyData = {
   attackSize: 10,
   attackSpeed: 5,
-  characterSpeed: 5
+  speed: .3,
 }
 
 
@@ -22,31 +22,30 @@ const enemy = document.getElementById('enemy')
 startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
   modal.classList.add('deactive')
+  characterMove(playerData.speed,player)
+  characterMove(enemyData.speed,enemy)
 })
 
 // キャラクターが動く関数
-function characterMove() {
+function characterMove(characterSpeed,characterName) {
   let position = 50;
-  const plus = true;
+  let plus = true;
+
   function move() {
     if (plus) {
-      position += 0.1;
-      if (position >= 100) {
-        position = 100;
-        plus = false;
-        console.log(plus)
-      } 
+      position += characterSpeed;
+    } else {
+      position -= characterSpeed;
     }
-    else {
-      position -= 0.1;
-      if (position <= 0) {
-        position = 0;
-        plus = true;
-      }
+    if (position >= 95) {
+      plus = false;
     }
-    player.style.left = `${position}%`;
+    if (position <= 5) {
+      plus = true;
+    }
+    characterName.style.left = `${position}%`;
     requestAnimationFrame(move);
   }
   requestAnimationFrame(move);
 }
-characterMove()
+
