@@ -19,12 +19,64 @@ main {
       }
     }
     .playerData {
+      // .playerAttack {
+      //   width: 10px;
+      //   height: 10px;
+      //   background-color: #000;
+      //   position: absolute;
+      //   bottom: 20%;
+      // }
+      
       .player {
         position: absolute;
         bottom: 12%;
         font-size: 60px;
         left: 50%;
         transform: translateX(-50%);
+      }
+
+      .playerAttackSelect {
+        width: 100%;
+        position: absolute;
+        bottom: 4%;
+        display: flex;
+        margin-bottom: 2px;
+        li {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          border: 2px solid black;
+          gap: 5px;
+          padding: 5px 0;
+          margin: 2px 1px;
+          &.normalShot {
+            background-color: #88c5e0;
+          }
+        }
+      }
+      .playerAttackGuage {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 35px;
+        display: flex;
+        span {
+          border: 1px solid black;
+          width: 10%;
+          margin-right: 0.01px;
+          height: 100%;
+          z-index: 1;
+        }
+      }
+      .playerAttackGuageValue {
+        width: 100%;
+        display: flex;
+        background-color: #11ffef6b;
+        position: absolute;
+        bottom: 0;
+        width: 0%;
+        height: 35px;
       }
     }
   }

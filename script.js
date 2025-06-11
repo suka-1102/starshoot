@@ -2,7 +2,7 @@
 const playerData = {
   attackSize: 10,
   attackSpeed: 5,
-  speed: .15
+  speed: .3
 }
 
 const enemyData = {
@@ -18,12 +18,15 @@ const mask = document.getElementById('mask');
 const modal = document.getElementById('modal');
 const player = document.getElementById('player')
 const enemy = document.getElementById('enemy')
+const playerAttack = document.getElementById('playerAttack')
+const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
 // スタートボタンをクリックした時
 startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
   modal.classList.add('deactive')
   characterMove(playerData.speed,player);
   // characterMove(enemyData.speed,enemy)
+  chargeGauge();
 })
 
 // キャラクターが動く関数
@@ -69,3 +72,16 @@ function characterMove(characterSpeed, characterName) {
   requestAnimationFrame(move);
 }
 
+// ゲージを貯める時の関数
+function chargeGauge () {
+  let timer = 0;
+  const chargeGaugeTimer = setInterval(() => {
+    
+    if (timer >= 100) {
+      timer = 99.9;
+    }
+    timer+= 0.1;
+    playerAttackGuageValue.style.width = `${timer}%`
+    console.log(timer)
+  }, 10);
+}
