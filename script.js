@@ -20,6 +20,11 @@ const player = document.getElementById('player')
 const enemy = document.getElementById('enemy')
 const playerAttack = document.getElementById('playerAttack')
 const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
+const normalShot = document.getElementById('normalShot')
+
+normalShot.classList.add('deactive');
+
+
 // スタートボタンをクリックした時
 startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
@@ -72,16 +77,49 @@ function characterMove(characterSpeed, characterName) {
   requestAnimationFrame(move);
 }
 
-// ゲージを貯める時の関数
+
+let chargetimer = 0;
+let normalShotEnable = false
+// ゲージを貯める関数
 function chargeGauge () {
-  let timer = 0;
+  
   const chargeGaugeTimer = setInterval(() => {
     
-    if (timer >= 100) {
-      timer = 99.9;
+    if (chargetimer >= 100) {
+      chargetimer = 99.9;
     }
-    timer+= 0.1;
-    playerAttackGuageValue.style.width = `${timer}%`
-    console.log(timer)
-  }, 10);
+
+    chargetimer+= 0.1;
+    var set = chargetimer;
+    playerAttackGuageValue.style.width = `${chargetimer}%`
+    // normalShotが溜まった時
+    if (chargetimer >= 20) {
+      normalShot.classList.remove('deactive');
+      normalShotEnable = true;
+      
+    } else {
+      normalShot.classList.add("deactive")
+    }
+  }, 15);
 }
+
+
+// normalShotの関数
+function normalShotButton () {
+  document.addEventListener('keydown', (event) => {
+    if (normalShotEnable) {
+      if (event.key === 'a') {
+        chargetimer -= 20;
+        if (chargetimer < 0) {
+          chargetimer = 0;
+        }
+        if (chargetimer < 20) {
+          normalShotEnable = false;
+        }
+      }
+    }
+  });
+}
+
+normalShotButton();
+

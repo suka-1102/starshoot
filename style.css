@@ -43,6 +43,9 @@ main .field .playerData .playerAttackSelect li {
 main .field .playerData .playerAttackSelect li.normalShot {
   background-color: #88c5e0;
 }
+main .field .playerData .playerAttackSelect li.normalShot.deactive {
+  opacity: 0.5;
+}
 main .field .playerData .playerAttackGuage {
   position: absolute;
   bottom: 0;

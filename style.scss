@@ -52,7 +52,11 @@ main {
           margin: 2px 1px;
           &.normalShot {
             background-color: #88c5e0;
+            &.deactive {
+              opacity: 0.5;
+            }
           }
+          
         }
       }
       .playerAttackGuage {
