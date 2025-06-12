@@ -9,6 +9,7 @@ main {
     margin: 0 auto;
     border: 5px solid black;
     position: relative;
+    overflow: hidden;
     .enemyData {
       .enemy {
         position: absolute;
@@ -19,20 +20,28 @@ main {
       }
     }
     .playerData {
-      // .playerAttack {
-      //   width: 10px;
-      //   height: 10px;
-      //   background-color: #000;
-      //   position: absolute;
-      //   bottom: 20%;
-      // }
+      
       
       .player {
         position: absolute;
-        bottom: 12%;
+        bottom: 95px;
         font-size: 60px;
         left: 50%;
         transform: translateX(-50%);
+        .playerAttack {
+          
+          .normalAttackElement {
+            li {
+              width: 10px;
+              height: 10px;
+              background-color: #000;
+              position: absolute;
+              z-index: 1;
+              background-color: #88c5e0;
+              left: 22px;
+            }
+          }
+        }
       }
 
       .playerAttackSelect {

@@ -18,7 +18,7 @@ const mask = document.getElementById('mask');
 const modal = document.getElementById('modal');
 const player = document.getElementById('player')
 const enemy = document.getElementById('enemy')
-const playerAttack = document.getElementById('playerAttack')
+const normalAttackElement = document.getElementById('normalAttackElement')
 const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
 const normalShot = document.getElementById('normalShot')
 
@@ -34,9 +34,10 @@ startButton.addEventListener('click', () => {
   chargeGauge();
 })
 
+let position = 50;
 // キャラクターが動く関数
 function characterMove(characterSpeed, characterName) {
-  let position = 50;
+  
   let plus = true;
   let lastTime = performance.now();
 
@@ -71,6 +72,8 @@ function characterMove(characterSpeed, characterName) {
     if (position <= 5) plus = true;
 
     characterName.style.left = `${position}%`;
+    const playerLeft = player.offsetLeft;
+    normalShotButton();
     requestAnimationFrame(move);
   }
 
@@ -78,22 +81,21 @@ function characterMove(characterSpeed, characterName) {
 }
 
 
-let chargetimer = 0;
+let chargeTimer = 0;
 let normalShotEnable = false
 // ゲージを貯める関数
 function chargeGauge () {
   
   const chargeGaugeTimer = setInterval(() => {
     
-    if (chargetimer >= 100) {
-      chargetimer = 99.9;
+    if (chargeTimer >= 100) {
+      chargeTimer = 99.9;
     }
 
-    chargetimer+= 0.1;
-    var set = chargetimer;
-    playerAttackGuageValue.style.width = `${chargetimer}%`
+    chargeTimer+= 0.1;
+    playerAttackGuageValue.style.width = `${chargeTimer}%`
     // normalShotが溜まった時
-    if (chargetimer >= 20) {
+    if (chargeTimer >= 20) {
       normalShot.classList.remove('deactive');
       normalShotEnable = true;
       
@@ -104,16 +106,41 @@ function chargeGauge () {
 }
 
 
+const playerLeft = player.offsetLeft;
+console.log(playerLeft) 
 // normalShotの関数
 function normalShotButton () {
+  let attackCount = 0;
   document.addEventListener('keydown', (event) => {
     if (normalShotEnable) {
       if (event.key === 'a') {
-        chargetimer -= 20;
-        if (chargetimer < 0) {
-          chargetimer = 0;
+        positionFixed = position
+        console.log(positionFixed)
+        chargeTimer -= 20;
+
+        const li = document.createElement('li');
+        li.classList.add('normalAttackLi')
+        li.id = `normalAttackLi${attackCount}`;
+
+        normalAttackElement.appendChild(li);
+
+        attackCount++;
+        // 玉が飛んでいく処理
+        let normalAttackTimer = 0;
+        const normalAttack = setInterval(() => {
+          
+          normalAttackTimer+= 1;
+          li.style.bottom = `${normalAttackTimer}px`
+          li.style.left = `${positionFixed}%`;
+          if (normalAttackTimer >= 680) {
+            li.parentNode.removeChild(li);
+          }
+        }, 15);
+
+        if (chargeTimer < 0) {
+          chargeTimer = 0;
         }
-        if (chargetimer < 20) {
+        if (chargeTimer < 20) {
           normalShotEnable = false;
         }
       }
@@ -121,5 +148,5 @@ function normalShotButton () {
   });
 }
 
-normalShotButton();
+
 
