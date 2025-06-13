@@ -24,7 +24,7 @@ main .field .playerData .player {
   left: 50%;
   transform: translateX(-50%);
 }
-main .field .playerData .player .playerAttack .normalAttackElement li {
+main .field .playerData .normalAttackElement li {
   width: 10px;
   height: 10px;
   background-color: #000;

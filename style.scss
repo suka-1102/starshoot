@@ -30,17 +30,18 @@ main {
         transform: translateX(-50%);
         .playerAttack {
           
-          .normalAttackElement {
-            li {
-              width: 10px;
-              height: 10px;
-              background-color: #000;
-              position: absolute;
-              z-index: 1;
-              background-color: #88c5e0;
-              left: 22px;
-            }
-          }
+          
+        }
+      }
+      .normalAttackElement {
+        li {
+          width: 10px;
+          height: 10px;
+          background-color: #000;
+          position: absolute;
+          z-index: 1;
+          background-color: #88c5e0;
+          left: 22px;
         }
       }
 

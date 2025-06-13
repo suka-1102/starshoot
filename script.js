@@ -73,13 +73,13 @@ function characterMove(characterSpeed, characterName) {
 
     characterName.style.left = `${position}%`;
     const playerLeft = player.offsetLeft;
-    normalShotButton();
+    
     requestAnimationFrame(move);
   }
 
   requestAnimationFrame(move);
 }
-
+normalShotButton();
 
 let chargeTimer = 0;
 let normalShotEnable = false
@@ -114,25 +114,24 @@ function normalShotButton () {
   document.addEventListener('keydown', (event) => {
     if (normalShotEnable) {
       if (event.key === 'a') {
-        positionFixed = position
-        console.log(positionFixed)
+        const positionFixed = position
         chargeTimer -= 20;
 
         const li = document.createElement('li');
         li.classList.add('normalAttackLi')
         li.id = `normalAttackLi${attackCount}`;
-
+        
         normalAttackElement.appendChild(li);
 
         attackCount++;
         // 玉が飛んでいく処理
-        let normalAttackTimer = 0;
+        let normalAttackTimer = 150;
         const normalAttack = setInterval(() => {
           
           normalAttackTimer+= 1;
           li.style.bottom = `${normalAttackTimer}px`
           li.style.left = `${positionFixed}%`;
-          if (normalAttackTimer >= 680) {
+          if (normalAttackTimer >= 720) {
             li.parentNode.removeChild(li);
           }
         }, 15);
