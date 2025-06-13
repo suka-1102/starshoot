@@ -1,7 +1,7 @@
 
 const playerData = {
   attackSize: 10,
-  attackSpeed: 5,
+  normalAttackSpeed: 1.3,
   speed: .3
 }
 
@@ -30,7 +30,7 @@ startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
   modal.classList.add('deactive')
   characterMove(playerData.speed,player);
-  // characterMove(enemyData.speed,enemy)
+  characterMove(enemyData.speed,enemy)
   chargeGauge();
 })
 
@@ -73,6 +73,7 @@ function characterMove(characterSpeed, characterName) {
 
     characterName.style.left = `${position}%`;
     const playerLeft = player.offsetLeft;
+    const enemyLeft = enemy.offsetLeft;
     
     requestAnimationFrame(move);
   }
@@ -107,7 +108,7 @@ function chargeGauge () {
 
 
 const playerLeft = player.offsetLeft;
-console.log(playerLeft) 
+
 // normalShotの関数
 function normalShotButton () {
   let attackCount = 0;
@@ -128,10 +129,12 @@ function normalShotButton () {
         let normalAttackTimer = 150;
         const normalAttack = setInterval(() => {
           
-          normalAttackTimer+= 1;
+          normalAttackTimer+= playerData.normalAttackSpeed;
           li.style.bottom = `${normalAttackTimer}px`
           li.style.left = `${positionFixed}%`;
-          if (normalAttackTimer >= 720) {
+
+          hitJudgment(positionFixed,normalAttackTimer)
+          if (normalAttackTimer >= 720 && normalAttackElement.contains(li)) {
             li.parentNode.removeChild(li);
           }
         }, 15);
@@ -147,5 +150,21 @@ function normalShotButton () {
   });
 }
 
+// 当たり判定の関数
+function hitJudgment (positionFixed,normalAttackTimer) {
+  const enemyLeft = enemy.offsetLeft;
+  const positionInPixels = 600 * (positionFixed / 100);
+  if (
+    normalAttackTimer >= 630 &&
+    normalAttackTimer <= 710 &&
+    positionInPixels >= enemyLeft -30 &&
+    positionInPixels <= enemyLeft + 30
+  ) {
+    
+    // ゲームクリアの処理
 
+    
+  }
+
+}
 
