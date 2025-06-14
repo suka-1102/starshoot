@@ -16,6 +16,7 @@ const enemyData = {
 const startButton = document.getElementById('modalStartButton');
 const mask = document.getElementById('mask');
 const modal = document.getElementById('modal');
+const modalClearGame = document.getElementById('modalClearGame');
 const player = document.getElementById('player')
 const enemy = document.getElementById('enemy')
 const normalAttackElement = document.getElementById('normalAttackElement')
@@ -24,14 +25,23 @@ const normalShot = document.getElementById('normalShot')
 
 normalShot.classList.add('deactive');
 
-
+modalClearGame.classList.add('deactive');
 // スタートボタンをクリックした時
 startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
   modal.classList.add('deactive')
   characterMove(playerData.speed,player);
-  characterMove(enemyData.speed,enemy)
+  // characterMove(enemyData.speed,enemy)
   chargeGauge();
+})
+
+// 次へ進むボタンを押した時
+modalNextGame.addEventListener('click', () => {
+  mask.classList.add('deactive');
+  modalClearGame.classList.add('deactive')
+  gameFinish = false;
+  normalShotEnable = true;
+  characterMove(playerData.speed,player);
 })
 
 let position = 50;
@@ -42,6 +52,7 @@ function characterMove(characterSpeed, characterName) {
   let lastTime = performance.now();
 
   function move(now) {
+    if (gameFinish) return; 
     const deltaTime = (now - lastTime) / 1000;
     lastTime = now;
 
@@ -88,6 +99,7 @@ let normalShotEnable = false
 function chargeGauge () {
   
   const chargeGaugeTimer = setInterval(() => {
+    if (gameFinish) return; 
     
     if (chargeTimer >= 100) {
       chargeTimer = 99.9;
@@ -150,6 +162,7 @@ function normalShotButton () {
   });
 }
 
+let gameFinish = false
 // 当たり判定の関数
 function hitJudgment (positionFixed,normalAttackTimer) {
   const enemyLeft = enemy.offsetLeft;
@@ -162,9 +175,12 @@ function hitJudgment (positionFixed,normalAttackTimer) {
   ) {
     
     // ゲームクリアの処理
-
+    mask.classList.remove('deactive');
+    chargeTimer = 0;
+    gameFinish = true;
+    normalShotEnable = false;
+    modalClearGame.classList.remove('deactive')
     
   }
 
 }
-

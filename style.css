@@ -101,6 +101,38 @@ main .modal .modalStartButton {
   background-color: #2c36ea;
   color: #fff;
 }
+main .modalClearGame {
+  position: absolute;
+  width: 250px;
+  height: 200px;
+  padding: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  z-index: 10;
+  background-color: #fff;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 10px;
+}
+main .modalClearGame.deactive {
+  opacity: 0;
+  visibility: hidden;
+}
+main .modalClearGame p {
+  display: flex;
+  justify-content: center;
+}
+main .modalClearGame .modalNextGame {
+  padding: 20px 30px;
+  border-radius: 5px;
+  background-color: #2c36ea;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+}
 main .mask {
   position: fixed;
   top: 0;
