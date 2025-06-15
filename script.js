@@ -11,7 +11,7 @@ const playerData = {
 const enemyData = {
   attackSize: 10,
   attackSpeed: 5,
-  speed: .3,
+  speed: .5,
 }
 
 let normalShotSettings = {
@@ -48,7 +48,8 @@ modalClearGame.classList.add('deactive');
 startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
   modal.classList.add('deactive')
-  characterMove(playerData.speed,player);
+  
+  characterMove(playerData.speed, enemyData.speed);
   // characterMove(enemyData.speed,enemy)
   chargeGauge();
 })
@@ -59,22 +60,34 @@ modalNextGame.addEventListener('click', () => {
   modalClearGame.classList.add('deactive')
   gameFinish = false;
   normalShotSettings.enable = true;
-  characterMove(playerData.speed,player);
+  
+  characterMove(playerData.speed, enemyData.speed);
 })
 
-let position = 50;
+let playerPosition = 50;
+let enemyPosition = 50;
 // キャラクターが動く関数
-function characterMove(characterSpeed, characterName) {
+function characterMove(playerSpeed, enemySpeed) {
   
-  let plus = true;
+  let playerPlus = true;
+  let enemyPlus = false;
   let lastTime = performance.now();
+  let turnNumber = null;
+    
+  const enemyTurn = setInterval(() => {
+    turnNumber = Math.random() * 100;
+    if(turnNumber >= 50) enemyPlus =false;
+    if(turnNumber < 50) enemyPlus =true;
+  }, 2000)
+ 
 
   function move(now) {
-    if (gameFinish) return; 
+    if (gameFinish) return;
     const deltaTime = (now - lastTime) / 1000;
     lastTime = now;
 
-    let distance = characterSpeed * deltaTime * 60;
+    let playerDistance = playerSpeed * deltaTime * 60;
+    let enemyDistance = enemySpeed * deltaTime * 60;
 
     document.addEventListener('keydown', (event) => {
 
@@ -84,23 +97,35 @@ function characterMove(characterSpeed, characterName) {
       }
       switch (event.key) {
         case 'ArrowRight':
-          plus = true;
+          playerPlus = true;
           break;
         case 'ArrowLeft':
-          plus = false;
+          playerPlus = false;
           break;
       }
     });
-    if (plus) {
-      position += distance;
+    if (playerPlus) {
+      playerPosition += playerDistance;
     } else {
-      position -= distance;
+      playerPosition -= playerDistance;
     }
+    if (playerPosition >= 96) playerPlus = false;
+    if (playerPosition <= 4) playerPlus = true;
 
-    if (position >= 95) plus = false;
-    if (position <= 5) plus = true;
+    // 敵の動き
+    if (enemyPlus) {
+      enemyPosition += enemyDistance;
+    } else {
+      enemyPosition -= enemyDistance;
+    }
+    if (enemyPosition >= 96) enemyPlus = false;
+    if (enemyPosition <= 4) enemyPlus = true;
 
-    characterName.style.left = `${position}%`;
+
+    
+
+    player.style.left = `${playerPosition}%`;
+    enemy.style.left = `${enemyPosition}%`;
     const playerLeft = player.offsetLeft;
     const enemyLeft = enemy.offsetLeft;
     
@@ -112,8 +137,7 @@ function characterMove(characterSpeed, characterName) {
 normalShotButton();
 
 let chargeTimer = 0;
-// let normalShotEnable = false;
-// let bigShotEnable = false;
+
 // ゲージを貯める関数
 function chargeGauge () {
   
@@ -184,10 +208,10 @@ function hitJudgment (positionFixed, attackTimer, hitRangeFront, hitRangeBack) {
       bigShot.style.display = 'flex'
    
       bigShot.classList.add('deactive');
-        
       
       
-     
+      
+      
 
 
     }
@@ -205,24 +229,14 @@ function hitJudgment (positionFixed, attackTimer, hitRangeFront, hitRangeBack) {
   }
   
 }
-  // if (gameFinish) {
-  //   console.log(stageCount)
-  //   if (stageCount === 1) {
-  //     newShot.textContent = 'カーブショットを覚えました！'
-  //   }
-  //   if (stageCount === 2) {
-  //     newShot.textContent = 'fwiorjfを覚えました！'
-  //   }
-  //   stageCount++;
 
-  // }
 
 function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront, hitRangeBack) {
   let attackCount = 0;
   document.addEventListener('keydown', (event) => {
     if (shotStatus.enable) {
       if (event.key === `${button}`) {
-        const positionFixed = position
+        const positionFixed = playerPosition
         chargeTimer -= cost;
 
         const li = document.createElement('li');
@@ -259,3 +273,6 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
     }
   });  
 }
+
+
+
