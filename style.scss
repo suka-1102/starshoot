@@ -23,6 +23,19 @@ main {
           transform: translateX(-50%);
         }
       }
+      .enemySpeedShotElement {
+        li {
+          width: 10px;
+          height: 10px;
+          background-color: #000;
+          position: absolute;
+          z-index: 1;
+          background-color: #e43e3e;
+          left: 22px;
+          transform: translateX(-50%);
+        }
+      }
+
       .enemy {
         position: absolute;
         top: 12%;
@@ -69,7 +82,8 @@ main {
           gap: 5px;
           padding: 5px 0;
           margin: 2px 1px;
-          &.enemyNormalShot
+          &.enemyNormalShot,
+          &.enemySpeedShot
           {
             background-color: #f40606d8;
             &.deactive {

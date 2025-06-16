@@ -2,7 +2,7 @@
 const playerData = {
   attackSize: 10,
   normalAttackSpeed: 1.8,
-  bigShotSpeed: 1.8,
+  // bigShotSpeed: 1.8,
   speed: .3,
   normalShotCost: 20,
   bigShotCost: 30,
@@ -19,19 +19,32 @@ let normalShotSettings = {
   enable: false,
   hitRangeFront: 30,
   hitRangeBack: 30,
+  cost: 20,
+  speed: 1.8
 
 }
 let enemyNormalShotSettings = {
   enable: false,
   hitRangeFront: 30,
   hitRangeBack: 30,
-
+  speed:1.8,
+  cost: 20,
+}
+let enemySpeedShotSettings = {
+  enable: false,
+  speed: 7,
+  hitRangeFront: 30,
+  hitRangeBack: 30,
+  cost: 30,
 }
 
 let bigShotSettings = {
   enable: false,
   hitRangeFront: 45,
   hitRangeBack: 60,
+  Speed: 1.8,
+  cost: 30,
+
 }
 
 const startButton = document.getElementById('modalStartButton');
@@ -44,14 +57,17 @@ const player = document.getElementById('player')
 const enemy = document.getElementById('enemy')
 const normalAttackElement = document.getElementById('normalAttackElement')
 const enemyNormalShotElement = document.getElementById('enemyNormalShotElement')
+const enemySpeedShotElement = document.getElementById('enemySpeedShotElement')
 const bigShotElement = document.getElementById('bigShotElement')
 const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
 const normalShot = document.getElementById('normalShot')
 const enemyNormalShot = document.getElementById('enemyNormalShot')
+const enemySpeedShot = document.getElementById('enemySpeedShot')
 const bigShot = document.getElementById('bigShot')
 
 normalShot.classList.add('deactive');
 bigShot.style.display = 'none';
+enemySpeedShot.style.display = 'none';
 
 modalClearGame.classList.add('deactive');
 
@@ -63,7 +79,6 @@ startButton.addEventListener('click', () => {
   // characterMove(enemyData.speed,enemy)
   chargeGauge();
   enemyChargeGauge()
-  console.log("test")
 })
 let stageCount = 1;
 let invincible = false;
@@ -189,7 +204,12 @@ function chargeGauge () {
 
 // 敵のゲージ
 let enemyChargeTimer = 0;
-let enemyAttackDecision = 0
+let enemyAttackDecisionNormal = 0
+let enemyAttackDecisionSpeed = 0
+
+
+let enemyNormalShotLogged = false;
+let enemySpeedShotLogged = false;
 function enemyChargeGauge () {
   const enemyChargeGaugeTimer = setInterval(() => {
     if (gameFinish) return; 
@@ -204,30 +224,76 @@ function enemyChargeGauge () {
     if (enemyChargeTimer >= 20) {
       enemyNormalShot.classList.remove('deactive');
       enemyNormalShotSettings.enable = true;
-      // if (enemyChargeTimer >= 30) {
-      //   enemyShotProcess (enemyNormalShotSettings, enemyData.normalShotCost, enemyNormalShotElement, enemyData.attackSpeed, enemyNormalShotSettings.hitRangeFront, enemyNormalShotSettings.hitRangeBack)
-      // }
-      
-      
+
+      // 相手の攻撃 
+      if (!enemyNormalShotLogged) {
+        const enemyNormalShotDecision = setInterval(() => {
+          enemyAttackDecisionNormal = Math.random() * 100;
+          
+          if(enemyAttackDecisionNormal < 50) {
+            
+            enemyShotProcess (
+              enemyNormalShotSettings,
+              enemyData.normalShotCost,
+              enemyNormalShotElement,
+              enemyData.attackSpeed,
+              enemyNormalShotSettings.hitRangeFront,
+              enemyNormalShotSettings.hitRangeBack
+            )
+          }
+        }, 1000)
+        enemyNormalShotLogged = true;
+      }
+
     } 
-    // if (enemyChargeTimer >= 30) {
-    //   bigShot.classList.remove('deactive');
-    //   bigShotSettings.enable = true;
-    // }
+    if (stageCount >= 2) {
+      if (enemyChargeTimer >= 30) {
+        enemySpeedShot.classList.remove('deactive');
+        enemySpeedShotSettings.enable = true;
+  
+        // 相手の攻撃 
+        if (!enemySpeedShotLogged) {
+          const enemySpeedShotDecision = setInterval(() => {
+            enemyAttackDecisionSpeed = Math.random() * 100;
+            if(enemyAttackDecisionSpeed < 50) {
+              enemyShotProcess (
+                enemySpeedShotSettings,
+                enemySpeedShotSettings.cost,
+                enemySpeedShotElement,
+                enemySpeedShotSettings.speed,
+                enemySpeedShotSettings.hitRangeFront,
+                enemySpeedShotSettings.hitRangeBack
+              )
+            }
+          }, 1000)
+          enemySpeedShotLogged = true;
+        }
+  
+  
+      }
+    }
+    
     if (enemyChargeTimer < 20) {
       enemyNormalShot.classList.add("deactive");
       // normalShotSettings.enable = false;
     }
-    // if (enemyChargeTimer < 30) {
-    //   bigShot.classList.add("deactive");
-    //   bigShotSettings.enable = false;
-    // }
+    if (enemyChargeTimer < 30) {
+      enemySpeedShot.classList.add("deactive");
+    }
   }, 15);
 }
 
 const playerLeft = player.offsetLeft;
 
-shotProcess (normalShotSettings, 'a', playerData.normalShotCost, normalAttackElement, playerData.normalAttackSpeed,normalShotSettings.hitRangeFront, normalShotSettings.hitRangeBack)
+shotProcess (
+  normalShotSettings, 
+  'a', 
+  normalShotSettings.cost, 
+  normalAttackElement, 
+  normalShotSettings.speed,
+  normalShotSettings.hitRangeFront, 
+  normalShotSettings.hitRangeBack
+)
 
 
 
@@ -258,10 +324,9 @@ function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, 
       gameFinish = true;
       normalShotSettings.enable = false;
       modalClearGameText.textContent = "ゲームオーバー‥"
-      
-      startButton.textContent = 'やり直す'
-      startButton.style.zIndex = "11"
-      stageCount = 1;
+      // startButton.textContent = 'やり直す'
+      // startButton.style.zIndex = "11"
+      // stageCount = 1;
       
     }
   }
@@ -289,6 +354,7 @@ function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, 
       if (stageCount === 2) {
         newShot.textContent = 'ビッグショットを覚えました！'
         bigShot.style.display = 'flex'
+        enemySpeedShot.style.display = 'flex';
      
         bigShot.classList.add('deactive');
         
@@ -300,7 +366,15 @@ function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, 
         newShot.textContent = ''
       }
       if (stageCount >= 2) {
-        shotProcess (bigShotSettings, 's', playerData.bigShotCost, bigShotElement, playerData.bigShotSpeed, bigShotSettings.hitRangeFront, bigShotSettings.hitRangeBack)
+        shotProcess (
+          bigShotSettings, 
+          's', 
+          bigShotSettings.cost, 
+          bigShotElement, 
+          bigShotSettings.speed, 
+          bigShotSettings.hitRangeFront, 
+          bigShotSettings.hitRangeBack
+        )
       }
     }
   }
@@ -342,10 +416,10 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
           
         }, 15);
 
-        if (chargeTimer < 0) {
-          chargeTimer = 0;
+        if (enemyChargeTimer < 0) {
+          enemyChargeTimer = 0;
         }
-        if (chargeTimer < cost) {
+        if (enemyChargeTimer < cost) {
           shotStatus.enable = false;
         }
       }
@@ -356,58 +430,44 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
 // 敵の玉の処理
 function enemyShotProcess (shotStatus, cost, enemyShotElement, speed, hitRangeFront, hitRangeBack) {
   let attackCount = 0;
-    if (enemyNormalShotSettings.enable) {
-      const enemyPositionFixed = enemyPosition;
-      enemyChargeTimer -= cost;
+  if (shotStatus.enable) {
+    const enemyPositionFixed = enemyPosition;
+    enemyChargeTimer -= cost;
 
-      const li = document.createElement('li');
-      li.classList.add('attackLi');
-      li.id = `attackLi${attackCount}`;
-      
-      enemyShotElement.appendChild(li);
-
-      attackCount++;
-      // 玉が飛んでいく処理
-      let enemyAttackTimer = 650;
-      const normalAttack = setInterval(() => {
-        
-        enemyAttackTimer -= speed;
-        li.style.bottom = `${enemyAttackTimer}px`
-        li.style.left = `${enemyPositionFixed}%`;
+    const li = document.createElement('li');
+    li.classList.add('attackLi');
+    li.id = `attackLi${attackCount}`;
     
-        hitJudgment(enemyPositionFixed,false,enemyAttackTimer,hitRangeFront, hitRangeBack)
-        if (enemyAttackTimer <= 50 && enemyNormalShotElement.contains(li)) {
-          li.parentNode.removeChild(li);
-        }
-        // if (enemyAttackTimer <= 100 && bigShotElement.contains(li)) {
-        //   li.parentNode.removeChild(li);
-        // }
-        
-      }, 15);
+    enemyShotElement.appendChild(li);
 
-      if (chargeTimer < 0) {
-        chargeTimer = 0;
+    attackCount++;
+    // 玉が飛んでいく処理
+    let enemyAttackTimer = 650;
+    const normalAttack = setInterval(() => {
+      
+      enemyAttackTimer -= speed;
+      li.style.bottom = `${enemyAttackTimer}px`
+      li.style.left = `${enemyPositionFixed}%`;
+  
+      hitJudgment(enemyPositionFixed,false,enemyAttackTimer,hitRangeFront, hitRangeBack)
+      if (enemyAttackTimer <= 50 && enemyNormalShotElement.contains(li)) {
+        li.parentNode.removeChild(li);
       }
-      if (chargeTimer < cost) {
-        shotStatus.enable = false;
-      }
+      // if (enemyAttackTimer <= 100 && bigShotElement.contains(li)) {
+      //   li.parentNode.removeChild(li);
+      // }
+    }, 15);
+
+    if (enemyChargeTimer < 0) {
+      enemyChargeTimer = 0;
     }
-    ;  
+    if (enemyChargeTimer < cost) {
+      shotStatus.enable = false;
+    }
+  };  
 }
 
-const enemyDecision = setInterval(() => {
-  enemyAttackDecision = Math.random() * 100;
-  if(enemyAttackDecision < 50) {
-    enemyShotProcess (
-      enemyNormalShotSettings,
-      enemyData.normalShotCost,
-      enemyNormalShotElement,
-      enemyData.attackSpeed,
-      enemyNormalShotSettings.hitRangeFront,
-      enemyNormalShotSettings.hitRangeBack
-    )
-  }
-}, 1000)
+
 
 if (stageCount === 1) {
   startButton.textContent = 'ゲームスタート'
