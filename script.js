@@ -1,18 +1,13 @@
 
 const playerData = {
-  attackSize: 10,
-  normalAttackSpeed: 1.8,
-  // bigShotSpeed: 1.8,
   speed: .3,
-  normalShotCost: 20,
-  bigShotCost: 30,
+  chargeSpeed: .2
 }
 
 const enemyData = {
-  attackSize: 10,
-  attackSpeed: 1.8,
   speed: .5,
-  normalShotCost: 20,
+  chargeSpeed: .2,
+  
 }
 
 let normalShotSettings = {
@@ -179,7 +174,7 @@ function chargeGauge () {
       chargeTimer = 99.9;
     }
 
-    chargeTimer+= 0.3;
+    chargeTimer+= playerData.chargeSpeed;
     playerAttackGuageValue.style.width = `${chargeTimer}%`
     // normalShotが溜まった時
     if (chargeTimer >= 20) {
@@ -231,12 +226,11 @@ function enemyChargeGauge () {
           enemyAttackDecisionNormal = Math.random() * 100;
           
           if(enemyAttackDecisionNormal < 50) {
-            
             enemyShotProcess (
               enemyNormalShotSettings,
-              enemyData.normalShotCost,
+              enemyNormalShotSettings.cost,
               enemyNormalShotElement,
-              enemyData.attackSpeed,
+              enemyNormalShotSettings.speed,
               enemyNormalShotSettings.hitRangeFront,
               enemyNormalShotSettings.hitRangeBack
             )
@@ -256,6 +250,7 @@ function enemyChargeGauge () {
           const enemySpeedShotDecision = setInterval(() => {
             enemyAttackDecisionSpeed = Math.random() * 100;
             if(enemyAttackDecisionSpeed < 50) {
+              
               enemyShotProcess (
                 enemySpeedShotSettings,
                 enemySpeedShotSettings.cost,
@@ -355,17 +350,24 @@ function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, 
         newShot.textContent = 'ビッグショットを覚えました！'
         bigShot.style.display = 'flex'
         enemySpeedShot.style.display = 'flex';
-     
+        enemy.style.color = "purple"
+        enemyData.chargeSpeed += .2
+        enemyData.speed += .2
+        
         bigShot.classList.add('deactive');
         
       }
-      // else if (stageCount === 3) {
-      //   newShot.textContent = 'fwiorjfを覚えました！'
-      // } 
+      else if (stageCount === 3) {
+        newShot.textContent = 'カーブショットを覚えました！'
+        enemy.style.color = "silver"
+        enemyData.chargeSpeed += .4
+        enemyData.speed += .2
+      } 
       else {
         newShot.textContent = ''
       }
       if (stageCount >= 2) {
+        
         shotProcess (
           bigShotSettings, 
           's', 
