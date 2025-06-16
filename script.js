@@ -10,11 +10,18 @@ const playerData = {
 
 const enemyData = {
   attackSize: 10,
-  attackSpeed: 5,
+  attackSpeed: 1.8,
   speed: .5,
+  normalShotCost: 20,
 }
 
 let normalShotSettings = {
+  enable: false,
+  hitRangeFront: 30,
+  hitRangeBack: 30,
+
+}
+let enemyNormalShotSettings = {
   enable: false,
   hitRangeFront: 30,
   hitRangeBack: 30,
@@ -31,10 +38,12 @@ const startButton = document.getElementById('modalStartButton');
 const mask = document.getElementById('mask');
 const modal = document.getElementById('modal');
 const modalClearGame = document.getElementById('modalClearGame');
+const modalClearGameText = document.getElementById('modalClearGameText');
 const newShot = document.getElementById('newShot');
 const player = document.getElementById('player')
 const enemy = document.getElementById('enemy')
 const normalAttackElement = document.getElementById('normalAttackElement')
+const enemyNormalShotElement = document.getElementById('enemyNormalShotElement')
 const bigShotElement = document.getElementById('bigShotElement')
 const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
 const normalShot = document.getElementById('normalShot')
@@ -45,6 +54,7 @@ normalShot.classList.add('deactive');
 bigShot.style.display = 'none';
 
 modalClearGame.classList.add('deactive');
+
 // スタートボタンをクリックした時
 startButton.addEventListener('click', () => {
   mask.classList.add('deactive');
@@ -52,7 +62,8 @@ startButton.addEventListener('click', () => {
   characterMove(playerData.speed, enemyData.speed);
   // characterMove(enemyData.speed,enemy)
   chargeGauge();
-  
+  enemyChargeGauge()
+  console.log("test")
 })
 let stageCount = 1;
 let invincible = false;
@@ -68,7 +79,6 @@ modalNextGame.addEventListener('click', () => {
   }, 3000);
   
   characterMove(playerData.speed, enemyData.speed);
-  // enemyChargeGauge()
 })
 
 let playerPosition = 50;
@@ -179,6 +189,7 @@ function chargeGauge () {
 
 // 敵のゲージ
 let enemyChargeTimer = 0;
+let enemyAttackDecision = 0
 function enemyChargeGauge () {
   const enemyChargeGaugeTimer = setInterval(() => {
     if (gameFinish) return; 
@@ -192,7 +203,11 @@ function enemyChargeGauge () {
     // normalShotが溜まった時
     if (enemyChargeTimer >= 20) {
       enemyNormalShot.classList.remove('deactive');
-      normalShotSettings.enable = true;
+      enemyNormalShotSettings.enable = true;
+      // if (enemyChargeTimer >= 30) {
+      //   enemyShotProcess (enemyNormalShotSettings, enemyData.normalShotCost, enemyNormalShotElement, enemyData.attackSpeed, enemyNormalShotSettings.hitRangeFront, enemyNormalShotSettings.hitRangeBack)
+      // }
+      
       
     } 
     // if (enemyChargeTimer >= 30) {
@@ -201,7 +216,7 @@ function enemyChargeGauge () {
     // }
     if (enemyChargeTimer < 20) {
       enemyNormalShot.classList.add("deactive");
-      normalShotSettings.enable = false;
+      // normalShotSettings.enable = false;
     }
     // if (enemyChargeTimer < 30) {
     //   bigShot.classList.add("deactive");
@@ -219,45 +234,77 @@ shotProcess (normalShotSettings, 'a', playerData.normalShotCost, normalAttackEle
 let gameFinish = false
 
 // 当たり判定の関数
-function hitJudgment (positionFixed, attackTimer, hitRangeFront, hitRangeBack) {
+function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, hitRangeBack) {
   if (gameFinish || invincible) return;
   const enemyLeft = enemy.offsetLeft;
+  const playerLeft = player.offsetLeft;
   const positionInPixels = 600 * (positionFixed / 100);
-  if (
-    attackTimer >= 630 &&
-    attackTimer <= 700 &&
-    positionInPixels >= enemyLeft -hitRangeFront &&
-    positionInPixels <= enemyLeft + hitRangeBack-5
-  ) {
-    
-    // ゲームクリアの処理
-    mask.classList.remove('deactive');
-    chargeTimer = 0;
-    gameFinish = true;
-    normalShotSettings.enable = false;
-    modalClearGame.classList.remove('deactive')
-    stageCount++;
-    document.querySelectorAll('.attackLi').forEach(attack => {
-      attack.remove();
-    });
-    
-    if (stageCount === 2) {
-      newShot.textContent = 'ビッグショットを覚えました！'
-      bigShot.style.display = 'flex'
-   
-      bigShot.classList.add('deactive');
+  if (!isPlayerAttack) {
+    if (
+      attackTimer >= 100 &&
+      attackTimer <= 150 &&
+      positionInPixels >= playerLeft -hitRangeFront &&
+      positionInPixels <= playerLeft + hitRangeBack-5
+    ) 
+    {
+
+      // ゲームオーバーの処理
+      mask.classList.remove('deactive');
+      modal.classList.remove('deactive')
+      modalClearGame.classList.remove('deactive')    
+      modalNextGame.style.display = "none"
+      chargeTimer = 0;
+      enemyChargeTimer = 0;
+      gameFinish = true;
+      normalShotSettings.enable = false;
+      modalClearGameText.textContent = "ゲームオーバー‥"
+      
+      startButton.textContent = 'やり直す'
+      startButton.style.zIndex = "11"
+      stageCount = 1;
       
     }
-    // else if (stageCount === 3) {
-    //   newShot.textContent = 'fwiorjfを覚えました！'
-    // } 
-    else {
-      newShot.textContent = ''
-    }
-    if (stageCount >= 2) {
-      shotProcess (bigShotSettings, 's', playerData.bigShotCost, bigShotElement, playerData.bigShotSpeed, bigShotSettings.hitRangeFront, bigShotSettings.hitRangeBack)
+  }
+  if (isPlayerAttack) {
+    if (
+      attackTimer >= 630 &&
+      attackTimer <= 700 &&
+      positionInPixels >= enemyLeft -hitRangeFront &&
+      positionInPixels <= enemyLeft + hitRangeBack-5
+    ) {
+      
+      // ゲームクリアの処理
+      mask.classList.remove('deactive');
+      chargeTimer = 0;
+      enemyChargeTimer = 0;
+      gameFinish = true;
+      normalShotSettings.enable = false;
+      modalClearGameText.textContent = "ゲームクリア！！"
+      modalClearGame.classList.remove('deactive')
+      stageCount++;
+      document.querySelectorAll('.attackLi').forEach(attack => {
+        attack.remove();
+      });
+      
+      if (stageCount === 2) {
+        newShot.textContent = 'ビッグショットを覚えました！'
+        bigShot.style.display = 'flex'
+     
+        bigShot.classList.add('deactive');
+        
+      }
+      // else if (stageCount === 3) {
+      //   newShot.textContent = 'fwiorjfを覚えました！'
+      // } 
+      else {
+        newShot.textContent = ''
+      }
+      if (stageCount >= 2) {
+        shotProcess (bigShotSettings, 's', playerData.bigShotCost, bigShotElement, playerData.bigShotSpeed, bigShotSettings.hitRangeFront, bigShotSettings.hitRangeBack)
+      }
     }
   }
+  
   
 }
 
@@ -267,7 +314,7 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
   document.addEventListener('keydown', (event) => {
     if (shotStatus.enable) {
       if (event.key === `${button}`) {
-        const positionFixed = playerPosition
+        const playerPositionFixed = playerPosition
         chargeTimer -= cost;
 
         const li = document.createElement('li');
@@ -283,9 +330,9 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
           
           attackTimer+= speed;
           li.style.bottom = `${attackTimer}px`
-          li.style.left = `${positionFixed}%`;
+          li.style.left = `${playerPositionFixed}%`;
 
-          hitJudgment(positionFixed,attackTimer,hitRangeFront, hitRangeBack)
+          hitJudgment(playerPositionFixed,true,attackTimer,hitRangeFront, hitRangeBack)
           if (attackTimer >= 720 && normalAttackElement.contains(li)) {
             li.parentNode.removeChild(li);
           }
@@ -304,4 +351,64 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
       }
     }
   });  
+}
+
+// 敵の玉の処理
+function enemyShotProcess (shotStatus, cost, enemyShotElement, speed, hitRangeFront, hitRangeBack) {
+  let attackCount = 0;
+    if (enemyNormalShotSettings.enable) {
+      const enemyPositionFixed = enemyPosition;
+      enemyChargeTimer -= cost;
+
+      const li = document.createElement('li');
+      li.classList.add('attackLi');
+      li.id = `attackLi${attackCount}`;
+      
+      enemyShotElement.appendChild(li);
+
+      attackCount++;
+      // 玉が飛んでいく処理
+      let enemyAttackTimer = 650;
+      const normalAttack = setInterval(() => {
+        
+        enemyAttackTimer -= speed;
+        li.style.bottom = `${enemyAttackTimer}px`
+        li.style.left = `${enemyPositionFixed}%`;
+    
+        hitJudgment(enemyPositionFixed,false,enemyAttackTimer,hitRangeFront, hitRangeBack)
+        if (enemyAttackTimer <= 50 && enemyNormalShotElement.contains(li)) {
+          li.parentNode.removeChild(li);
+        }
+        // if (enemyAttackTimer <= 100 && bigShotElement.contains(li)) {
+        //   li.parentNode.removeChild(li);
+        // }
+        
+      }, 15);
+
+      if (chargeTimer < 0) {
+        chargeTimer = 0;
+      }
+      if (chargeTimer < cost) {
+        shotStatus.enable = false;
+      }
+    }
+    ;  
+}
+
+const enemyDecision = setInterval(() => {
+  enemyAttackDecision = Math.random() * 100;
+  if(enemyAttackDecision < 50) {
+    enemyShotProcess (
+      enemyNormalShotSettings,
+      enemyData.normalShotCost,
+      enemyNormalShotElement,
+      enemyData.attackSpeed,
+      enemyNormalShotSettings.hitRangeFront,
+      enemyNormalShotSettings.hitRangeBack
+    )
+  }
+}, 1000)
+
+if (stageCount === 1) {
+  startButton.textContent = 'ゲームスタート'
 }

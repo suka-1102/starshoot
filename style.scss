@@ -11,6 +11,18 @@ main {
     position: relative;
     overflow: hidden;
     .enemyData {
+      .enemyNormalShotElement {
+        li {
+          width: 10px;
+          height: 10px;
+          background-color: #000;
+          position: absolute;
+          z-index: 1;
+          background-color: #e43e3e;
+          left: 22px;
+          transform: translateX(-50%);
+        }
+      }
       .enemy {
         position: absolute;
         top: 12%;
@@ -36,7 +48,7 @@ main {
       .enemyAttackGuageValue {
         width: 0%;
         display: flex;
-        background-color: #11ffef6b;
+        background-color: #f406066b;
         position: absolute;
         top: 0;
       
@@ -57,9 +69,9 @@ main {
           gap: 5px;
           padding: 5px 0;
           margin: 2px 1px;
-          &.normalShot,
-          &.bigShot {
-            background-color: #88c5e0;
+          &.enemyNormalShot
+          {
+            background-color: #f40606d8;
             &.deactive {
               opacity: 0.5;
             }
@@ -182,6 +194,7 @@ main {
       border-radius: 5px;
       background-color: #2c36ea;
       color: #fff;
+      word-break: break-word;
     }
   }
   .modalClearGame {
@@ -199,6 +212,7 @@ main {
     flex-direction: column;
     gap: 20px;
     border-radius: 10px;
+    
     &.deactive {
       opacity: 0;
       visibility: hidden;

@@ -10,6 +10,16 @@ main .field {
   position: relative;
   overflow: hidden;
 }
+main .field .enemyData .enemyNormalShotElement li {
+  width: 10px;
+  height: 10px;
+  background-color: #000;
+  position: absolute;
+  z-index: 1;
+  background-color: #e43e3e;
+  left: 22px;
+  transform: translateX(-50%);
+}
 main .field .enemyData .enemy {
   position: absolute;
   top: 12%;
@@ -34,7 +44,7 @@ main .field .enemyData .enemyAttackGuage span {
 main .field .enemyData .enemyAttackGuageValue {
   width: 0%;
   display: flex;
-  background-color: rgba(17, 255, 239, 0.4196078431);
+  background-color: rgba(244, 6, 6, 0.4196078431);
   position: absolute;
   top: 0;
   height: 35px;
@@ -56,10 +66,10 @@ main .field .enemyData .enemyAttackSelect li {
   padding: 5px 0;
   margin: 2px 1px;
 }
-main .field .enemyData .enemyAttackSelect li.normalShot, main .field .enemyData .enemyAttackSelect li.bigShot {
-  background-color: #88c5e0;
+main .field .enemyData .enemyAttackSelect li.enemyNormalShot {
+  background-color: rgba(244, 6, 6, 0.8470588235);
 }
-main .field .enemyData .enemyAttackSelect li.normalShot.deactive, main .field .enemyData .enemyAttackSelect li.bigShot.deactive {
+main .field .enemyData .enemyAttackSelect li.enemyNormalShot.deactive {
   opacity: 0.5;
 }
 main .field .playerData .player {
@@ -156,6 +166,7 @@ main .modal .modalStartButton {
   border-radius: 5px;
   background-color: #2c36ea;
   color: #fff;
+  word-break: break-word;
 }
 main .modalClearGame {
   position: absolute;
