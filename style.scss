@@ -83,7 +83,8 @@ main {
           padding: 5px 0;
           margin: 2px 1px;
           &.enemyNormalShot,
-          &.enemySpeedShot
+          &.enemySpeedShot,
+          &.enemyInvincible
           {
             background-color: #f40606d8;
             &.deactive {

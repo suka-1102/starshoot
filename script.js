@@ -37,11 +37,15 @@ let bigShotSettings = {
   enable: false,
   hitRangeFront: 45,
   hitRangeBack: 60,
-  Speed: 1.8,
+  speed: 1.8,
   cost: 30,
 
 }
-
+let enemyInvincibleSettings = {
+  enable: false,
+  cost: 40,
+}
+let enemyInvincibleFlag =false
 const startButton = document.getElementById('modalStartButton');
 const mask = document.getElementById('mask');
 const modal = document.getElementById('modal');
@@ -58,11 +62,13 @@ const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
 const normalShot = document.getElementById('normalShot')
 const enemyNormalShot = document.getElementById('enemyNormalShot')
 const enemySpeedShot = document.getElementById('enemySpeedShot')
+const enemyInvincible = document.getElementById('enemyInvincible')
 const bigShot = document.getElementById('bigShot')
 
 normalShot.classList.add('deactive');
 bigShot.style.display = 'none';
 enemySpeedShot.style.display = 'none';
+enemyInvincible.style.display = 'none';
 
 modalClearGame.classList.add('deactive');
 
@@ -85,8 +91,8 @@ modalNextGame.addEventListener('click', () => {
   invincible = true; 
   normalShotSettings.enable = true;
   setTimeout(() => {
-    invincible = false; // 3秒後に無敵解除
-  }, 3000);
+    invincible = false;
+  }, 4000);
   
   characterMove(playerData.speed, enemyData.speed);
 })
@@ -205,12 +211,16 @@ let enemyAttackDecisionSpeed = 0
 
 let enemyNormalShotLogged = false;
 let enemySpeedShotLogged = false;
+let enemyInvincibleLogged = false;
 function enemyChargeGauge () {
   const enemyChargeGaugeTimer = setInterval(() => {
     if (gameFinish) return; 
     
     if (enemyChargeTimer >= 100) {
       enemyChargeTimer = 99.9;
+    }
+    if (enemyChargeTimer <= 0) {
+      enemyChargeTimer = 0;
     }
 
     enemyChargeTimer+= 0.3;
@@ -241,31 +251,51 @@ function enemyChargeGauge () {
 
     } 
     if (stageCount >= 2) {
-      if (enemyChargeTimer >= 30) {
-        enemySpeedShot.classList.remove('deactive');
-        enemySpeedShotSettings.enable = true;
+      // if (enemyChargeTimer >= 30) {
+      //   enemySpeedShot.classList.remove('deactive');
+      //   enemySpeedShotSettings.enable = true;
   
-        // 相手の攻撃 
-        if (!enemySpeedShotLogged) {
-          const enemySpeedShotDecision = setInterval(() => {
-            enemyAttackDecisionSpeed = Math.random() * 100;
-            if(enemyAttackDecisionSpeed < 50) {
+      //   // 相手の攻撃 
+      //   if (!enemySpeedShotLogged) {
+      //     const enemySpeedShotDecision = setInterval(() => {
+      //       enemyAttackDecisionSpeed = Math.random() * 100;
+      //       if(enemyAttackDecisionSpeed < 50) {
               
-              enemyShotProcess (
-                enemySpeedShotSettings,
-                enemySpeedShotSettings.cost,
-                enemySpeedShotElement,
-                enemySpeedShotSettings.speed,
-                enemySpeedShotSettings.hitRangeFront,
-                enemySpeedShotSettings.hitRangeBack
-              )
+      //         enemyShotProcess (
+      //           enemySpeedShotSettings,
+      //           enemySpeedShotSettings.cost,
+      //           enemySpeedShotElement,
+      //           enemySpeedShotSettings.speed,
+      //           enemySpeedShotSettings.hitRangeFront,
+      //           enemySpeedShotSettings.hitRangeBack
+      //         )
+      //       }
+      //     }, 1000)
+      //     enemySpeedShotLogged = true;
+      //   }
+  
+  
+      // }
+    }
+    if (stageCount >= 3) {
+      if (!enemyInvincibleLogged) {
+        const enemyInvincibleDecision = setInterval(() => {
+          if (enemyChargeTimer >= 40) {
+            enemyAttackDecisionInvincible = Math.random() * 100;
+            if (enemyAttackDecisionInvincible < 50) {
+              enemyInvincibleFlag  = true;
+              enemyChargeTimer -= 40;
+              enemy.style.color = "gold";
+              setTimeout(() => {
+                enemyInvincibleFlag = false;
+                enemy.style.color = "silver";
+              }, 3000);
             }
-          }, 1000)
-          enemySpeedShotLogged = true;
-        }
-  
-  
+          }
+        }, 1000);
+        enemyInvincibleLogged = true;
       }
+      
     }
     
     if (enemyChargeTimer < 20) {
@@ -274,6 +304,9 @@ function enemyChargeGauge () {
     }
     if (enemyChargeTimer < 30) {
       enemySpeedShot.classList.add("deactive");
+    }
+    if (enemyChargeTimer < 40) {
+      enemyInvincible.classList.add("deactive")
     }
   }, 15);
 }
@@ -295,8 +328,17 @@ shotProcess (
 let gameFinish = false
 
 // 当たり判定の関数
-function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, hitRangeBack) {
-  if (gameFinish || invincible) return;
+function hitJudgment 
+(
+  positionFixed,
+  isPlayerAttack,
+  attackTimer,
+  hitRangeFront,
+  hitRangeBack
+) {
+  if (gameFinish) return;
+  if (invincible) return
+  if (isPlayerAttack && enemyInvincibleFlag) return;
   const enemyLeft = enemy.offsetLeft;
   const playerLeft = player.offsetLeft;
   const positionInPixels = 600 * (positionFixed / 100);
@@ -362,6 +404,7 @@ function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, 
         enemy.style.color = "silver"
         enemyData.chargeSpeed += .4
         enemyData.speed += .2
+        enemyInvincible.style.display = 'flex';
       } 
       else {
         newShot.textContent = ''
@@ -378,6 +421,7 @@ function hitJudgment (positionFixed,isPlayerAttack, attackTimer, hitRangeFront, 
           bigShotSettings.hitRangeBack
         )
       }
+      
     }
   }
   
@@ -408,7 +452,14 @@ function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront
           li.style.bottom = `${attackTimer}px`
           li.style.left = `${playerPositionFixed}%`;
 
-          hitJudgment(playerPositionFixed,true,attackTimer,hitRangeFront, hitRangeBack)
+          hitJudgment
+          (
+            playerPositionFixed,
+            true,
+            attackTimer,
+            hitRangeFront, 
+            hitRangeBack
+          )
           if (attackTimer >= 720 && normalAttackElement.contains(li)) {
             li.parentNode.removeChild(li);
           }
@@ -450,8 +501,16 @@ function enemyShotProcess (shotStatus, cost, enemyShotElement, speed, hitRangeFr
       enemyAttackTimer -= speed;
       li.style.bottom = `${enemyAttackTimer}px`
       li.style.left = `${enemyPositionFixed}%`;
-  
-      hitJudgment(enemyPositionFixed,false,enemyAttackTimer,hitRangeFront, hitRangeBack)
+      
+      
+      hitJudgment
+      (
+        enemyPositionFixed,
+        false,
+        enemyAttackTimer,
+        hitRangeFront, 
+        hitRangeBack
+      )
       if (enemyAttackTimer <= 50 && enemyNormalShotElement.contains(li)) {
         li.parentNode.removeChild(li);
       }
@@ -474,3 +533,4 @@ function enemyShotProcess (shotStatus, cost, enemyShotElement, speed, hitRangeFr
 if (stageCount === 1) {
   startButton.textContent = 'ゲームスタート'
 }
+

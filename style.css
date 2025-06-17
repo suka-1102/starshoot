@@ -76,10 +76,10 @@ main .field .enemyData .enemyAttackSelect li {
   padding: 5px 0;
   margin: 2px 1px;
 }
-main .field .enemyData .enemyAttackSelect li.enemyNormalShot, main .field .enemyData .enemyAttackSelect li.enemySpeedShot {
+main .field .enemyData .enemyAttackSelect li.enemyNormalShot, main .field .enemyData .enemyAttackSelect li.enemySpeedShot, main .field .enemyData .enemyAttackSelect li.enemyInvincible {
   background-color: rgba(244, 6, 6, 0.8470588235);
 }
-main .field .enemyData .enemyAttackSelect li.enemyNormalShot.deactive, main .field .enemyData .enemyAttackSelect li.enemySpeedShot.deactive {
+main .field .enemyData .enemyAttackSelect li.enemyNormalShot.deactive, main .field .enemyData .enemyAttackSelect li.enemySpeedShot.deactive, main .field .enemyData .enemyAttackSelect li.enemyInvincible.deactive {
   opacity: 0.5;
 }
 main .field .playerData .player {
