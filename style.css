@@ -109,6 +109,16 @@ main .field .playerData .bigShotElement li {
   left: 22px;
   transform: translateX(-50%);
 }
+main .field .playerData .curveShotElement li {
+  width: 10px;
+  height: 10px;
+  background-color: #000;
+  position: absolute;
+  z-index: 1;
+  background-color: #88c5e0;
+  left: 22px;
+  transform: translateX(-50%);
+}
 main .field .playerData .playerAttackSelect {
   width: 100%;
   position: absolute;
@@ -126,10 +136,10 @@ main .field .playerData .playerAttackSelect li {
   padding: 5px 0;
   margin: 2px 1px;
 }
-main .field .playerData .playerAttackSelect li.normalShot, main .field .playerData .playerAttackSelect li.bigShot {
+main .field .playerData .playerAttackSelect li.normalShot, main .field .playerData .playerAttackSelect li.bigShot, main .field .playerData .playerAttackSelect li.curveShot {
   background-color: #88c5e0;
 }
-main .field .playerData .playerAttackSelect li.normalShot.deactive, main .field .playerData .playerAttackSelect li.bigShot.deactive {
+main .field .playerData .playerAttackSelect li.normalShot.deactive, main .field .playerData .playerAttackSelect li.bigShot.deactive, main .field .playerData .playerAttackSelect li.curveShot.deactive {
   opacity: 0.5;
 }
 main .field .playerData .playerAttackGuage {

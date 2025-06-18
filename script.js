@@ -18,6 +18,23 @@ let normalShotSettings = {
   speed: 1.8
 
 }
+
+let bigShotSettings = {
+  enable: false,
+  hitRangeFront: 45,
+  hitRangeBack: 60,
+  speed: 1.8,
+  cost: 30,
+}
+
+let curveShotSettings = {
+  enable: false,
+  hitRangeFront: 30,
+  hitRangeBack: 30,
+  speed: 1.8,
+  cost: 30,
+}
+
 let enemyNormalShotSettings = {
   enable: false,
   hitRangeFront: 30,
@@ -33,14 +50,7 @@ let enemySpeedShotSettings = {
   cost: 30,
 }
 
-let bigShotSettings = {
-  enable: false,
-  hitRangeFront: 45,
-  hitRangeBack: 60,
-  speed: 1.8,
-  cost: 30,
 
-}
 let enemyInvincibleSettings = {
   enable: false,
   cost: 40,
@@ -64,9 +74,11 @@ const enemyNormalShot = document.getElementById('enemyNormalShot')
 const enemySpeedShot = document.getElementById('enemySpeedShot')
 const enemyInvincible = document.getElementById('enemyInvincible')
 const bigShot = document.getElementById('bigShot')
+const curveShot = document.getElementById('curveShot')
 
 normalShot.classList.add('deactive');
 bigShot.style.display = 'none';
+curveShot.style.display = 'none';
 enemySpeedShot.style.display = 'none';
 enemyInvincible.style.display = 'none';
 
@@ -191,6 +203,8 @@ function chargeGauge () {
     if (chargeTimer >= 30) {
       bigShot.classList.remove('deactive');
       bigShotSettings.enable = true;
+      curveShot.classList.remove('deactive');
+      curveShotSettings.enable = true;
     }
     if (chargeTimer < 20) {
       normalShot.classList.add("deactive");
@@ -199,6 +213,8 @@ function chargeGauge () {
     if (chargeTimer < 30) {
       bigShot.classList.add("deactive");
       bigShotSettings.enable = false;
+      curveShot.classList.add("deactive");
+      curveShotSettings.enable = false;
     }
   }, 15);
 }
@@ -251,31 +267,31 @@ function enemyChargeGauge () {
 
     } 
     if (stageCount >= 2) {
-      // if (enemyChargeTimer >= 30) {
-      //   enemySpeedShot.classList.remove('deactive');
-      //   enemySpeedShotSettings.enable = true;
+      if (enemyChargeTimer >= 30) {
+        enemySpeedShot.classList.remove('deactive');
+        enemySpeedShotSettings.enable = true;
   
-      //   // 相手の攻撃 
-      //   if (!enemySpeedShotLogged) {
-      //     const enemySpeedShotDecision = setInterval(() => {
-      //       enemyAttackDecisionSpeed = Math.random() * 100;
-      //       if(enemyAttackDecisionSpeed < 50) {
+        // 相手の攻撃 
+        if (!enemySpeedShotLogged) {
+          const enemySpeedShotDecision = setInterval(() => {
+            enemyAttackDecisionSpeed = Math.random() * 100;
+            if(enemyAttackDecisionSpeed < 50) {
               
-      //         enemyShotProcess (
-      //           enemySpeedShotSettings,
-      //           enemySpeedShotSettings.cost,
-      //           enemySpeedShotElement,
-      //           enemySpeedShotSettings.speed,
-      //           enemySpeedShotSettings.hitRangeFront,
-      //           enemySpeedShotSettings.hitRangeBack
-      //         )
-      //       }
-      //     }, 1000)
-      //     enemySpeedShotLogged = true;
-      //   }
+              enemyShotProcess (
+                enemySpeedShotSettings,
+                enemySpeedShotSettings.cost,
+                enemySpeedShotElement,
+                enemySpeedShotSettings.speed,
+                enemySpeedShotSettings.hitRangeFront,
+                enemySpeedShotSettings.hitRangeBack
+              )
+            }
+          }, 1000)
+          enemySpeedShotLogged = true;
+        }
   
   
-      // }
+      }
     }
     if (stageCount >= 3) {
       if (!enemyInvincibleLogged) {
@@ -401,6 +417,7 @@ function hitJudgment
       }
       else if (stageCount === 3) {
         newShot.textContent = 'カーブショットを覚えました！'
+        curveShot.style.display = 'flex'
         enemy.style.color = "silver"
         enemyData.chargeSpeed += .4
         enemyData.speed += .2
@@ -421,6 +438,18 @@ function hitJudgment
           bigShotSettings.hitRangeBack
         )
       }
+      if (stageCount >= 3) {
+        shotProcess (
+          curveShotSettings, 
+          'd', 
+          curveShotSettings.cost, 
+          curveShotElement, 
+          curveShotSettings.speed, 
+          curveShotSettings.hitRangeFront, 
+          curveShotSettings.hitRangeBack,
+          true,
+        )
+      }
       
     }
   }
@@ -428,15 +457,48 @@ function hitJudgment
   
 }
 
-
-function shotProcess (shotStatus,button, cost, shotElement, speed, hitRangeFront, hitRangeBack) {
+function shotProcess 
+(shotStatus,
+  button, 
+  cost, 
+  shotElement, 
+  speed, 
+  hitRangeFront, 
+  hitRangeBack,
+  isCurveShot
+) {
   let attackCount = 0;
+
   document.addEventListener('keydown', (event) => {
     if (shotStatus.enable) {
       if (event.key === `${button}`) {
-        const playerPositionFixed = playerPosition
+     
+
+        let playerPositionFixed = playerPosition 
+        let curveProcessNumber = 0;
+        let curvePlus = true;
+        const playerPositionMemo = playerPositionFixed
         chargeTimer -= cost;
 
+        if (isCurveShot) {
+          const curveShotProcess = setInterval(() => {
+          
+            if (curveProcessNumber >= 20) curvePlus = false;
+            if (curveProcessNumber <= -20) curvePlus = true;
+            if (curvePlus) {
+              curveProcessNumber += .4;
+              playerPositionFixed = playerPositionMemo + curveProcessNumber;
+            } else {
+              curveProcessNumber -= .4;
+              playerPositionFixed = playerPositionMemo + curveProcessNumber;
+            }
+            
+            
+            // console.log(curvePlus)
+          },10)
+        }
+        
+        // console.log(curveProcessNumber)
         const li = document.createElement('li');
         li.classList.add('attackLi')
         li.id = `attackLi${attackCount}`;

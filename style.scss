@@ -135,6 +135,19 @@ main {
           transform: translateX(-50%);
         }
       }
+      .curveShotElement {
+        li {
+          width: 10px;
+          height: 10px;
+          background-color: #000;
+          position: absolute;
+          z-index: 1;
+          background-color: #88c5e0;
+          left: 22px;
+          transform: translateX(-50%);
+        }
+      }
+      
 
       .playerAttackSelect {
         width: 100%;
@@ -152,7 +165,8 @@ main {
           padding: 5px 0;
           margin: 2px 1px;
           &.normalShot,
-          &.bigShot {
+          &.bigShot,
+          &.curveShot {
             background-color: #88c5e0;
             &.deactive {
               opacity: 0.5;
