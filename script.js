@@ -450,6 +450,19 @@ function hitJudgment
           true,
         )
       }
+
+      // 三回勝った時の処理
+      if (stageCount === 4) {
+        mask.classList.remove('deactive');
+        modal.classList.remove('deactive')
+        modalClearGame.classList.remove('deactive')    
+        modalNextGame.style.display = "none"
+        chargeTimer = 0;
+        enemyChargeTimer = 0;
+        gameFinish = true;
+        normalShotSettings.enable = false;
+        modalClearGameText.textContent = "ゲームを全てクリアしました！"
+      }
       
     }
   }
@@ -492,13 +505,9 @@ function shotProcess
               curveProcessNumber -= .4;
               playerPositionFixed = playerPositionMemo + curveProcessNumber;
             }
-            
-            
-            // console.log(curvePlus)
           },10)
         }
         
-        // console.log(curveProcessNumber)
         const li = document.createElement('li');
         li.classList.add('attackLi')
         li.id = `attackLi${attackCount}`;
