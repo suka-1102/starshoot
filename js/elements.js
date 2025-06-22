@@ -11,6 +11,7 @@ export const enemyNormalShotElement = document.getElementById('enemyNormalShotEl
 export const enemySpeedShotElement = document.getElementById('enemySpeedShotElement')
 export const bigShotElement = document.getElementById('bigShotElement')
 export const playerAttackGuageValue = document.getElementById('playerAttackGuageValue')
+export const enemyAttackGuageValue = document.getElementById('enemyAttackGuageValue')
 export const normalShot = document.getElementById('normalShot')
 export const enemyNormalShot = document.getElementById('enemyNormalShot')
 export const enemySpeedShot = document.getElementById('enemySpeedShot')
