@@ -15,7 +15,7 @@ main .field .enemyData .enemyNormalShotElement li {
   height: 10px;
   background-color: #000;
   position: absolute;
-  z-index: 1;
+  z-index: -1;
   background-color: #e43e3e;
   left: 22px;
   transform: translateX(-50%);
@@ -94,7 +94,7 @@ main .field .playerData .normalAttackElement li {
   height: 10px;
   background-color: #000;
   position: absolute;
-  z-index: 1;
+  z-index: -1;
   background-color: #88c5e0;
   left: 22px;
   transform: translateX(-50%);
