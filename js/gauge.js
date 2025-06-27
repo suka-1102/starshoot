@@ -3,19 +3,19 @@ import { gameState, timers } from './state.js';
 
 import { enemyShotProcess } from './attack.js';
 
-const playerAttackGuageValue = document.getElementById("playerAttackGuageValue")
+const playerAttackGaugeValue = document.getElementById("playerAttackGaugeValue")
 const normalShot = document.getElementById("normalShot")
 const bigShot = document.getElementById("bigShot")
 const curveShot = document.getElementById("curveShot")
 
 export function chargeGauge() {
-  gameState.chargeGaugeInterval = setInterval(() => {
+  timers.chargeGaugeInterval = setInterval(() => {
     if (gameState.gameFinish) return;
 
     gameState.chargeTimer += playerData.chargeSpeed;
     if (gameState.chargeTimer >= 100) gameState.chargeTimer = 99.9;
 
-    playerAttackGuageValue.style.width = `${gameState.chargeTimer}%`;
+    playerAttackGaugeValue.style.width = `${gameState.chargeTimer}%`;
 
     const enableNormal = gameState.chargeTimer >= 20;
     const enableBig = gameState.chargeTimer >= 30;
@@ -51,7 +51,7 @@ export function enemyChargeGauge () {
     }
 
     gameState.enemyChargeTimer+= 0.3;
-    enemyAttackGuageValue.style.width = `${gameState.enemyChargeTimer}%`
+    enemyAttackGaugeValue.style.width = `${gameState.enemyChargeTimer}%`
     // normalShotが溜まった時
     if (gameState.enemyChargeTimer >= 20) {
       enemyNormalShot.classList.remove('deactive');
@@ -60,6 +60,7 @@ export function enemyChargeGauge () {
       // 相手の攻撃 
       if (!enemyNormalShotLogged) {
         timers.enemyNormalShotDecisionInterval = setInterval(() => {
+          // if (enemyNormalShotLogged) return;
           enemyAttackDecisionNormal = Math.random() * 100;
           
           if(enemyAttackDecisionNormal < 50) {
@@ -74,7 +75,8 @@ export function enemyChargeGauge () {
           }
         }, 1000)
         enemyNormalShotLogged = true;
-      }
+        
+      } 
 
     } 
     if (gameState.stageCount >= 2) {
@@ -108,6 +110,7 @@ export function enemyChargeGauge () {
       if (!enemyInvincibleLogged) {
         timers.enemyInvincibleDecisionInterval = setInterval(() => {
           if (gameState.enemyChargeTimer >= 40) {
+            enemyInvincible.classList.remove('deactive');
             enemyAttackDecisionInvincible = Math.random() * 100;
             if (enemyAttackDecisionInvincible < 50) {
               gameState.enemyInvincibleFlag  = true;

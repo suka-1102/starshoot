@@ -1,5 +1,9 @@
 import { gameState } from './state.js';
 import { hitJudgment } from './hit.js';
+const normalAttackElement = document.getElementById('normalAttackElement');
+const bigShotElement = document.getElementById('bigShotElement');
+const enemyNormalShotElement = document.getElementById('enemyNormalShotElement');
+
 
 export function shotProcess 
 (shotStatus,

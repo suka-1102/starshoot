@@ -1,4 +1,4 @@
-import { gameState } from './state.js';
+import { gameState, timers } from './state.js';
 import { playerData, enemyData } from './settings.js';
 import { stopAllTimers } from './stop.js';
 import { shotProcess } from './attack.js';
@@ -60,6 +60,8 @@ export function hitJudgment
       modalClearGameText.textContent = "ゲームクリア！！"
       modalClearGame.classList.remove('deactive')
       gameState.stageCount++;
+      // clearInterval(timers.enemyTurnInterval);
+      stopAllTimers();
       document.querySelectorAll('.attackLi').forEach(attack => {
         attack.remove();
       });
