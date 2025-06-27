@@ -1,7 +1,12 @@
 import { playerData, enemyData } from './settings.js';
 import { gameState, timers } from './state.js';
-import * as elements from './elements.js';
+
 import { enemyShotProcess } from './attack.js';
+
+const playerAttackGuageValue = document.getElementById("playerAttackGuageValue")
+const normalShot = document.getElementById("normalShot")
+const bigShot = document.getElementById("bigShot")
+const curveShot = document.getElementById("curveShot")
 
 export function chargeGauge() {
   gameState.chargeGaugeInterval = setInterval(() => {
@@ -10,7 +15,7 @@ export function chargeGauge() {
     gameState.chargeTimer += playerData.chargeSpeed;
     if (gameState.chargeTimer >= 100) gameState.chargeTimer = 99.9;
 
-    elements.playerAttackGuageValue.style.width = `${gameState.chargeTimer}%`;
+    playerAttackGuageValue.style.width = `${gameState.chargeTimer}%`;
 
     const enableNormal = gameState.chargeTimer >= 20;
     const enableBig = gameState.chargeTimer >= 30;
@@ -19,9 +24,9 @@ export function chargeGauge() {
     playerData.shotSettings.big.enable = enableBig;
     playerData.shotSettings.curve.enable = enableBig;
 
-    elements.normalShot.classList.toggle('deactive', !enableNormal);
-    elements.bigShot.classList.toggle('deactive', !enableBig);
-    elements.curveShot.classList.toggle('deactive', !enableBig);
+    normalShot.classList.toggle('deactive', !enableNormal);
+    bigShot.classList.toggle('deactive', !enableBig);
+    curveShot.classList.toggle('deactive', !enableBig);
 
   }, 15);
 }

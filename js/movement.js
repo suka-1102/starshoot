@@ -1,6 +1,8 @@
-import * as elements from './elements.js';
+
 import { gameState, timers } from './state.js';
 
+const player = document.getElementById('player')
+const enemy = document.getElementById('enemy')
 export function characterMove(playerSpeed, enemySpeed) {
   let playerPlus = true;
   let enemyPlus = false;
@@ -33,8 +35,8 @@ export function characterMove(playerSpeed, enemySpeed) {
     if (gameState.enemyPosition >= 96) enemyPlus = false;
     if (gameState.enemyPosition <= 4) enemyPlus = true;
 
-    elements.player.style.left = `${gameState.playerPosition}%`;
-    elements.enemy.style.left = `${gameState.enemyPosition}%`;
+    player.style.left = `${gameState.playerPosition}%`;
+    enemy.style.left = `${gameState.enemyPosition}%`;
 
     timers.moveRequestId = requestAnimationFrame(move);
   }

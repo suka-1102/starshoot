@@ -1,5 +1,5 @@
 import { playerData, enemyData } from './js/settings.js';
-import * as elements from './js/elements.js';
+// import * as elements from './js/elements.js';
 import { initialize } from './js/initialize.js';
 import { gameState } from './js/state.js';
 import { characterMove } from './js/movement.js';
@@ -10,9 +10,10 @@ import { shotProcess } from './js/attack.js';
 
 initialize();
 
+const modalStartButton = document.getElementById('modalStartButton')
 
 // スタートボタンをクリックした時
-elements.startButton.addEventListener('click', () => {
+modalStartButton.addEventListener('click', () => {
   mask.classList.add('deactive');
   modal.classList.add('deactive')
   characterMove(playerData.speed, enemyData.speed);
